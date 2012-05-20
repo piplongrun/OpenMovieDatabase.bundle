@@ -1,0 +1,8 @@
+[
+  {
+    "id":"imdb_poster",
+    "label":"Use poster from IMDb",
+    "type":"bool",
+    "default":"false"
+  }
+]

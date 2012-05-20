@@ -1,2 +1,0 @@
-Unofficial-IMDb-API.bundle
-==========================
