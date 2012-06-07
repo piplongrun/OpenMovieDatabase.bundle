@@ -65,8 +65,8 @@ class UnofficialImdbApi(Agent.Movies):
         else:
           metadata.summary = ''
 
-        if movie['Rating'] != 'N/A':
-          metadata.rating = float(movie['Rating'])
+        if movie['imdbRating'] != 'N/A':
+          metadata.rating = float(movie['imdbRating'])
         else:
           metadata.rating = None
 
