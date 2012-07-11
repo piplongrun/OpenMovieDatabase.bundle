@@ -16,7 +16,11 @@ class UnofficialImdbApi(Agent.Movies):
     results.Append(MetadataSearchResult(id=imdb_id, score=99))
 
   def update(self, metadata, media, lang):
-    url = 'http://www.imdbapi.com/?i=%s' % metadata.id
+    plot = 'full'
+    if Prefs['imdb_plot_short']:
+      plot = 'short'
+
+    url = 'http://www.imdbapi.com/?i=%s&plot=%s&tomatoes=true' % (metadata.id, plot)
 
     try:
       movie = JSON.ObjectFromURL(url, sleep=5.0)
@@ -65,8 +69,8 @@ class UnofficialImdbApi(Agent.Movies):
         else:
           metadata.summary = ''
 
-        if movie['Rating'] != 'N/A':
-          metadata.rating = float(movie['Rating'])
+        if movie['imdbRating'] != 'N/A':
+          metadata.rating = float(movie['imdbRating'])
         else:
           metadata.rating = None
 

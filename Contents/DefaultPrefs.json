@@ -4,5 +4,11 @@
     "label":"Use poster from IMDb",
     "type":"bool",
     "default":"false"
+  },
+  {
+    "id":"imdb_plot_short",
+    "label":"Use short plot",
+    "type":"bool",
+    "default":"false"
   }
 ]
