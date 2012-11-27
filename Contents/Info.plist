@@ -8,7 +8,5 @@
 	<string>2</string>
 	<key>PlexPluginClass</key>
 	<string>Agent</string>
-	<key>PlexPluginMode</key>
-	<string>AlwaysOn</string>
 </dict>
 </plist>
