@@ -2,11 +2,12 @@ import re
 
 def Start():
   HTTP.CacheTime = CACHE_1WEEK
-  HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:12.0) Gecko/20100101 Firefox/12.0'
+  HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.91 Safari/537.11'
   HTTP.Headers['Referer'] = 'http://www.imdb.com/'
 
 class UnofficialImdbApi(Agent.Movies):
-  name = 'Unofficial IMDb API'
+#  name = 'Unofficial IMDb API'
+  name = 'Open Movie Database'
   languages = [Locale.Language.English]
   primary_provider = False
   contributes_to = ['com.plexapp.agents.imdb']
@@ -20,7 +21,7 @@ class UnofficialImdbApi(Agent.Movies):
     if Prefs['imdb_plot_short']:
       plot = 'short'
 
-    url = 'http://www.imdbapi.com/?i=%s&plot=%s&tomatoes=true' % (metadata.id, plot)
+    url = 'http://www.omdbapi.com/?i=%s&plot=%s&tomatoes=true' % (metadata.id, plot)
 
     try:
       movie = JSON.ObjectFromURL(url, sleep=5.0)
