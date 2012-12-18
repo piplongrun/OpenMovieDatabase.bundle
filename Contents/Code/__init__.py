@@ -85,7 +85,7 @@ class UnofficialImdbApi(Agent.Movies):
         if duration > 0:
           metadata.duration = duration
 
-        if Prefs['imdb_poster']:
+        if Prefs['imdb_poster'] and movie['Poster'] != 'N/A':
           try:
             poster = movie['Poster']
             fullsize = poster.split('@@')[0] + '@@._V1._SX640.jpg'
