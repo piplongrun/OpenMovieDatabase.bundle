@@ -1,12 +1,11 @@
-import re
+RE_RUNTIME = Regex('([0-9]+) hrs? ([0-9]+) min')
 
 def Start():
   HTTP.CacheTime = CACHE_1WEEK
-  HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.91 Safari/537.11'
+  HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36'
   HTTP.Headers['Referer'] = 'http://www.imdb.com/'
 
 class UnofficialImdbApi(Agent.Movies):
-#  name = 'Unofficial IMDb API'
   name = 'Open Movie Database'
   languages = [Locale.Language.English]
   primary_provider = False
@@ -52,12 +51,12 @@ class UnofficialImdbApi(Agent.Movies):
         metadata.writers.clear()
         if movie['Writer'] != 'N/A':
           for writer in movie['Writer'].split(','):
-            metadata.writers.add(writer.strip())
+            metadata.writers.add(writer.rsplit('(', 1)[0].strip())
 
         metadata.directors.clear()
         if movie['Director'] != 'N/A':
           for director in movie['Director'].split(','):
-            metadata.directors.add(director.strip())
+            metadata.directors.add(director.rsplit('(', 1)[0].strip())
 
         metadata.roles.clear()
         if movie['Actors'] != 'N/A':
@@ -77,7 +76,7 @@ class UnofficialImdbApi(Agent.Movies):
 
         duration = 0
         try:
-          runtime = re.search('([0-9]+) hrs? ([0-9]+) min', movie['Runtime'])
+          runtime = RE_RUNTIME.search(movie['Runtime'])
           duration += int(runtime.group(1)) * 60 * 60 * 1000
           duration += int(runtime.group(2)) * 60 * 1000
         except:
