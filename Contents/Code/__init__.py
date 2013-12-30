@@ -2,11 +2,10 @@ RE_RUNTIME = Regex('([0-9]+) hrs? ([0-9]+) min')
 
 def Start():
   HTTP.CacheTime = CACHE_1WEEK
-  HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.91 Safari/537.11'
+  HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36'
   HTTP.Headers['Referer'] = 'http://www.imdb.com/'
 
 class UnofficialImdbApi(Agent.Movies):
-#  name = 'Unofficial IMDb API'
   name = 'Open Movie Database'
   languages = [Locale.Language.English]
   primary_provider = False
