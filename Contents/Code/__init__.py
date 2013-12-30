@@ -1,4 +1,4 @@
-import re
+RE_RUNTIME = Regex('([0-9]+) hrs? ([0-9]+) min')
 
 def Start():
   HTTP.CacheTime = CACHE_1WEEK
@@ -77,7 +77,7 @@ class UnofficialImdbApi(Agent.Movies):
 
         duration = 0
         try:
-          runtime = re.search('([0-9]+) hrs? ([0-9]+) min', movie['Runtime'])
+          runtime = RE_RUNTIME.search(movie['Runtime'])
           duration += int(runtime.group(1)) * 60 * 60 * 1000
           duration += int(runtime.group(2)) * 60 * 1000
         except:
