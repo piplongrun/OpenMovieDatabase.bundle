@@ -51,12 +51,12 @@ class UnofficialImdbApi(Agent.Movies):
         metadata.writers.clear()
         if movie['Writer'] != 'N/A':
           for writer in movie['Writer'].split(','):
-            metadata.writers.add(writer.strip())
+            metadata.writers.add(writer.rsplit('(', 1)[0].strip())
 
         metadata.directors.clear()
         if movie['Director'] != 'N/A':
           for director in movie['Director'].split(','):
-            metadata.directors.add(director.strip())
+            metadata.directors.add(director.rsplit('(', 1)[0].strip())
 
         metadata.roles.clear()
         if movie['Actors'] != 'N/A':
