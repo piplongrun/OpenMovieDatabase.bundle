@@ -10,5 +10,15 @@
     "label":"Use short plot",
     "type":"bool",
     "default":"false"
+  },
+  {
+    "id":"rating",
+    "label":"Rating",
+    "type":"enum",
+    "values": [
+      "IMDb",
+      "Rotten Tomatoes"
+    ],
+    "default":"IMDb"
   }
 ]
