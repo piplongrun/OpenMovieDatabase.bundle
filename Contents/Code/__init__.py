@@ -1,4 +1,4 @@
-RE_RUNTIME = Regex('([0-9]+) hrs? ([0-9]+) min')
+RE_RUNTIME = Regex('((?P<hours>[0-9]+) hrs? )?(?P<minutes>[0-9]+) min')
 
 def Start():
   HTTP.CacheTime = CACHE_1WEEK
@@ -69,16 +69,20 @@ class UnofficialImdbApi(Agent.Movies):
         else:
           metadata.summary = ''
 
-        if movie['imdbRating'] != 'N/A':
+        if Prefs['rating'] == 'Rotten Tomatoes' and 'tomatoUserMeter' in movie and movie['tomatoUserMeter'] != 'N/A':
+          metadata.rating = float(movie['tomatoUserMeter'])/10
+        elif Prefs['rating'] == 'IMDb' and 'imdbRating' in movie and movie['imdbRating'] != 'N/A':
           metadata.rating = float(movie['imdbRating'])
         else:
           metadata.rating = None
 
         duration = 0
         try:
-          runtime = RE_RUNTIME.search(movie['Runtime'])
-          duration += int(runtime.group(1)) * 60 * 60 * 1000
-          duration += int(runtime.group(2)) * 60 * 1000
+          runtime = RE_RUNTIME.search(movie['Runtime']).groups()
+          if 'hours' in runtime:
+            duration += int(runtime['hours']) * 60 * 60 * 1000
+          if 'minutes' in runtime:
+            duration += int(runtime['minutes']) * 60 * 1000
         except:
           pass
         if duration > 0:
