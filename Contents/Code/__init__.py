@@ -70,7 +70,7 @@ class UnofficialImdbApi(Agent.Movies):
           metadata.summary = ''
 
         if Prefs['rating'] == 'Rotten Tomatoes' and 'tomatoRating' in movie and movie['tomatoRating'] != 'N/A':
-          metadata.rating = float(movie['tomatoUserMeter'])
+          metadata.rating = float(movie['tomatoRating'])
         elif Prefs['rating'] == 'IMDb' and 'imdbRating' in movie and movie['imdbRating'] != 'N/A':
           metadata.rating = float(movie['imdbRating'])
         else:
