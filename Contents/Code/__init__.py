@@ -179,7 +179,7 @@ class OmdbApi(Agent.Movies):
           summary.append('IMDb: %s' % (rating_imdb))
 
         summary.reverse()
-        metadata.summary = ' | '.join(summary)
+        metadata.summary = '  ★  '.join(summary)
 
       else:
         metadata.rating = None
