@@ -1,24 +1,106 @@
 [
   {
-    "id":"imdb_poster",
-    "label":"Use poster from IMDb",
-    "type":"bool",
-    "default":"false"
+    "id": "use_title",
+    "label": "Title",
+    "type": "bool",
+    "default": "true"
   },
   {
-    "id":"imdb_plot_short",
-    "label":"Use short plot",
-    "type":"bool",
-    "default":"false"
+    "id": "use_year",
+    "label": "Year",
+    "type": "bool",
+    "default": "true"
   },
   {
-    "id":"rating",
-    "label":"Rating",
-    "type":"enum",
+    "id": "use_plot",
+    "label": "Plot",
+    "type": "bool",
+    "default": "true"
+  },
+  {
+    "id": "plot",
+    "label": "Full or short plot",
+    "type": "enum",
+    "values": [
+      "Full",
+      "Short"
+    ],
+    "default": "full"
+  },
+  {
+    "id": "use_content_rating",
+    "label": "Content rating",
+    "type": "bool",
+    "default": "true"
+  },
+  {
+    "id": "use_release_date",
+    "label": "Release date",
+    "type": "bool",
+    "default": "true"
+  },
+  {
+    "id": "use_genres",
+    "label": "Genres",
+    "type": "bool",
+    "default": "true"
+  },
+  {
+    "id": "use_directors",
+    "label": "Directors",
+    "type": "bool",
+    "default": "true"
+  },
+  {
+    "id": "use_writers",
+    "label": "Writers",
+    "type": "bool",
+    "default": "true"
+  },
+  {
+    "id": "use_actors",
+    "label": "Actors",
+    "type": "bool",
+    "default": "true"
+  },
+  {
+    "id": "use_runtime",
+    "label": "Runtime",
+    "type": "bool",
+    "default": "true"
+  },
+  {
+    "id": "use_poster",
+    "label": "Poster",
+    "type": "bool",
+    "default": "false"
+  },
+  {
+    "id": "use_rating",
+    "label": "Rating",
+    "type": "bool",
+    "default": "true"
+  },
+  {
+    "id": "rating",
+    "label": "IMDb or Rotten Tomatoes rating",
+    "type": "enum",
     "values": [
       "IMDb",
       "Rotten Tomatoes"
     ],
-    "default":"IMDb"
+    "default": "IMDb"
+  },
+  {
+    "id": "add_rating_imdb",
+    "label": "Add IMDb rating to summary",
+    "type": "bool",
+    "default": "false"
+  },
+  {
+    "id": "add_rating_rt",
+    "label": "Add Rotten Tomatoes rating to summary",
+    "type": "bool",
+    "default": "false"
   }
 ]
