@@ -172,10 +172,10 @@ class OmdbApi(Agent.Movies):
 
         summary = [metadata.summary]
 
-        if Prefs['add_rating_rt']:
+        if Prefs['add_rating_rt'] and rating_rt:
           summary.append('Rotten Tomatoes: %s%%' % (rating_rt))
 
-        if Prefs['add_rating_imdb']:
+        if Prefs['add_rating_imdb'] and rating_imdb:
           summary.append('IMDb: %s' % (rating_imdb))
 
         summary.reverse()
