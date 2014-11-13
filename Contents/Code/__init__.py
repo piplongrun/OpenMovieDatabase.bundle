@@ -45,7 +45,12 @@ class OmdbApi(Agent.Movies):
 
   def update(self, metadata, media, lang):
 
-    url = API_URL % (metadata.id, Prefs['plot'].lower())
+    if Prefs['plot']:
+      plot = Prefs['plot'].lower()
+    else:
+      plot = 'full'
+
+    url = API_URL % (metadata.id, plot)
 
     try:
       movie = JSON.ObjectFromURL(url, sleep=5.0)
