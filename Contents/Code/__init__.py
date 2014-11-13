@@ -7,6 +7,10 @@ def Start():
   HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10) AppleWebKit/600.1.25 (KHTML, like Gecko) Version/8.0 Safari/600.1.25'
   HTTP.Headers['Referer'] = 'http://www.imdb.com/'
 
+def ValidatePrefs():
+
+  pass
+
 class OmdbApi(Agent.Movies):
 
   name = 'Open Movie Database'
