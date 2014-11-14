@@ -145,22 +145,21 @@ class OmdbApi(Agent.Movies):
         metadata.duration = None
 
       # Poster
+      valid_names = list()
+
       if Prefs['use_poster'] and 'Poster' in movie and movie['Poster'] != 'N/A':
 
-        try:
-          poster = movie['Poster']
-          fullsize = poster.split('@@')[0] + '@@._V1._SX640.jpg'
-          thumb    = poster.split('@@')[0] + '@@._V1._SX100.jpg'
+        fullsize = '%s@@._V1._SX640.jpg' % (movie['Poster'].split('@@')[0])
+        thumb = '%s@@._V1._SX100.jpg' % (movie['Poster'].split('@@')[0])
 
-          if fullsize not in metadata.posters:
-            p = HTTP.Request(thumb)
-            metadata.posters[fullsize] = Proxy.Preview(p, sort_order=1)
+        valid_names.append(fullsize)
 
-        except:
-          pass
+        if fullsize not in metadata.posters:
 
-      else:
-        metadata.posters.validate_keys([])
+          preview = HTTP.Request(thumb).content
+          metadata.posters[fullsize] = Proxy.Preview(preview)
+
+      metadata.posters.validate_keys(valid_names)
 
       # Rating
       if Prefs['use_rating']:
