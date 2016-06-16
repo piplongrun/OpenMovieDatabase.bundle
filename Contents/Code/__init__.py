@@ -106,14 +106,16 @@ class OmdbApi(Agent.Movies):
 
       if Prefs['use_directors'] and 'Director' in movie and movie['Director'] != 'N/A':
         for director in movie['Director'].split(','):
-          metadata.directors.add(director.rsplit('(', 1)[0].strip())
+          meta_director = metadata.directors.new()
+          meta_director.name = director.rsplit('(', 1)[0].strip()
 
       # Writers
       metadata.writers.clear()
 
       if Prefs['use_writers'] and 'Writer' in movie and movie['Writer'] != 'N/A':
         for writer in movie['Writer'].split(','):
-          metadata.writers.add(writer.rsplit('(', 1)[0].strip())
+          meta_writer = metadata.writers.new()
+          meta_writer.name = writer.rsplit('(', 1)[0].strip()
 
       # Actors
       metadata.roles.clear()
