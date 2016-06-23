@@ -123,7 +123,7 @@ class OmdbApi(Agent.Movies):
       if Prefs['use_actors'] and 'Actors' in movie and movie['Actors'] != 'N/A':
         for actor in movie['Actors'].split(','):
           role = metadata.roles.new()
-          role.actor = actor.strip()
+          role.name = actor.strip()
 
       # Runtime
       if Prefs['use_runtime'] and 'Runtime' in movie:
