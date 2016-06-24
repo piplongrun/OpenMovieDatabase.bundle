@@ -106,16 +106,28 @@ class OmdbApi(Agent.Movies):
 
       if Prefs['use_directors'] and 'Director' in movie and movie['Director'] != 'N/A':
         for director in movie['Director'].split(','):
-          meta_director = metadata.directors.new()
-          meta_director.name = director.rsplit('(', 1)[0].strip()
+          try:
+            meta_director = metadata.directors.new()
+            meta_director.name = director.rsplit('(', 1)[0].strip()
+          except:
+            try:
+              metadata.directors.add(director.rsplit('(', 1)[0].strip())
+            except:
+              pass
 
       # Writers
       metadata.writers.clear()
 
       if Prefs['use_writers'] and 'Writer' in movie and movie['Writer'] != 'N/A':
         for writer in movie['Writer'].split(','):
-          meta_writer = metadata.writers.new()
-          meta_writer.name = writer.rsplit('(', 1)[0].strip()
+          try:
+            meta_writer = metadata.writers.new()
+            meta_writer.name = writer.rsplit('(', 1)[0].strip()
+          except:
+            try:
+              metadata.writers.add(writer.rsplit('(', 1)[0].strip())
+            except:
+              pass
 
       # Actors
       metadata.roles.clear()
@@ -123,7 +135,13 @@ class OmdbApi(Agent.Movies):
       if Prefs['use_actors'] and 'Actors' in movie and movie['Actors'] != 'N/A':
         for actor in movie['Actors'].split(','):
           role = metadata.roles.new()
-          role.name = actor.strip()
+          try:
+            role.name = actor.strip()
+          except:
+            try:
+              role.actor = actor.strip()
+            except:
+              pass
 
       # Runtime
       if Prefs['use_runtime'] and 'Runtime' in movie:
