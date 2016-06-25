@@ -46,6 +46,12 @@
     "default": "true"
   },
   {
+    "id": "use_production",
+    "label": "Production company",
+    "type": "bool",
+    "default": "true"
+  },
+  {
     "id": "use_directors",
     "label": "Directors",
     "type": "bool",
