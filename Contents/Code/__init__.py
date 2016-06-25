@@ -101,6 +101,12 @@ class OmdbApi(Agent.Movies):
         for genre in movie['Genre'].split(','):
           metadata.genres.add(genre.strip())
 
+      # Production company
+      if Prefs['use_production'] and 'Production' in movie and movie['Production'] != 'N/A':
+        metadata.studio = movie['Production']
+      else:
+        metadata.studio = None
+
       # Directors
       metadata.directors.clear()
 
