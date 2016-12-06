@@ -175,8 +175,8 @@ class OmdbApi(Agent.Movies):
 
       if Prefs['use_poster'] and 'Poster' in movie and movie['Poster'] != 'N/A':
 
-        fullsize = '%s@@._V1._SX640.jpg' % (movie['Poster'].split('@@')[0])
-        thumb = '%s@@._V1._SX100.jpg' % (movie['Poster'].split('@@')[0])
+        fullsize = '%s@._V1.jpg' % (movie['Poster'].split('@', 1)[0])
+        thumb = '%s@._V1._SX300.jpg' % (movie['Poster'].split('@', 1)[0])
 
         valid_names.append(fullsize)
 
