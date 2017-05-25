@@ -18,16 +18,6 @@
     "default": "true"
   },
   {
-    "id": "plot",
-    "label": "Full or short plot",
-    "type": "enum",
-    "values": [
-      "Full",
-      "Short"
-    ],
-    "default": "full"
-  },
-  {
     "id": "use_content_rating",
     "label": "Content rating",
     "type": "bool",
