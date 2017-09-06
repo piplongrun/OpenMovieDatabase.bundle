@@ -1,87 +1,94 @@
 [
   {
     "id": "use_title",
-    "label": "Title",
+    "label": "Use Title",
     "type": "bool",
     "default": "true"
   },
   {
     "id": "use_year",
-    "label": "Year",
+    "label": "Use Year",
     "type": "bool",
     "default": "true"
   },
   {
     "id": "use_plot",
-    "label": "Plot",
+    "label": "Use Plot",
     "type": "bool",
     "default": "true"
   },
   {
     "id": "use_content_rating",
-    "label": "Content rating",
+    "label": "Use Content Rating",
     "type": "bool",
     "default": "true"
   },
   {
     "id": "use_release_date",
-    "label": "Release date",
+    "label": "Use Release Date",
     "type": "bool",
     "default": "true"
   },
   {
     "id": "use_genres",
-    "label": "Genres",
+    "label": "Use Genres",
     "type": "bool",
     "default": "true"
   },
   {
     "id": "use_production",
-    "label": "Production company",
+    "label": "Use Production Company",
     "type": "bool",
     "default": "true"
   },
   {
     "id": "use_directors",
-    "label": "Directors",
+    "label": "Use Directors",
     "type": "bool",
     "default": "true"
   },
   {
     "id": "use_writers",
-    "label": "Writers",
+    "label": "Use Writers",
     "type": "bool",
     "default": "true"
   },
   {
     "id": "use_actors",
-    "label": "Actors",
+    "label": "Use Actors",
     "type": "bool",
     "default": "true"
   },
   {
     "id": "use_runtime",
-    "label": "Runtime",
+    "label": "Use Runtime",
     "type": "bool",
     "default": "true"
   },
   {
     "id": "use_poster",
-    "label": "Poster",
+    "label": "Use Poster",
     "type": "bool",
     "default": "false"
   },
   {
-    "id": "use_rating",
-    "label": "Rating",
-    "type": "bool",
-    "default": "true"
-  },
-  {
-    "id": "rating",
-    "label": "IMDb or Rotten Tomatoes rating",
+    "id": "rating_movies",
+    "label": "Rating (Movies)",
     "type": "enum",
     "values": [
+      "None",
+      "IMDb",
+      "Rotten Tomatoes",
+      "Metacritic"
+    ],
+    "default": "IMDb"
+  },
+  {
+    "id": "rating_tv",
+    "label": "Rating (TV)",
+    "type": "enum",
+    "values": [
+      "None",
       "IMDb",
       "Rotten Tomatoes"
     ],
@@ -96,6 +103,12 @@
   {
     "id": "add_rating_rt",
     "label": "Add Rotten Tomatoes rating to summary",
+    "type": "bool",
+    "default": "false"
+  },
+  {
+    "id": "add_rating_metacritic",
+    "label": "Add Metacritic rating to summary",
     "type": "bool",
     "default": "false"
   }
