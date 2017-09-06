@@ -52,164 +52,7 @@ class OmdbApi(Agent.Movies):
   def update(self, metadata, media, lang):
 
     url = API_URL % ('imdb_id', metadata.id)
-
-    try:
-      movie = JSON.ObjectFromURL(url, sleep=1.0)
-    except:
-      Log('*** Failed when trying to open url: %s ***' % (url))
-      return None
-
-    if not 'error' in movie:
-
-      # Title
-      if Prefs['use_title'] and movie['title']:
-        metadata.title = movie['title']
-      else:
-        metadata.title = None
-
-      # Year
-      if Prefs['use_year'] and movie['year']:
-        metadata.year = movie['year']
-      else:
-        metadata.year = None
-
-      # Plot
-      if Prefs['use_plot'] and movie['plot']:
-        metadata.summary = movie['plot']
-      else:
-        metadata.summary = None
-
-      # Content rating
-      if Prefs['use_content_rating'] and movie['rated']:
-        metadata.content_rating = movie['rated']
-      else:
-        metadata.content_rating = None
-
-      # Release date
-      if Prefs['use_release_date'] and movie['released']:
-        metadata.originally_available_at = Datetime.ParseDate(movie['released']).date()
-      else:
-        metadata.originally_available_at = None
-
-      # Genres
-      metadata.genres.clear()
-
-      if Prefs['use_genres'] and movie['genres']:
-        for genre in movie['genres']:
-          metadata.genres.add(genre.strip())
-
-      # Production company
-      if Prefs['use_production'] and movie['studio']:
-        metadata.studio = movie['studio']
-      else:
-        metadata.studio = None
-
-      # Directors
-      metadata.directors.clear()
-
-      if Prefs['use_directors'] and movie['directors']:
-        for director in movie['directors']:
-          try:
-            meta_director = metadata.directors.new()
-            meta_director.name = director
-          except:
-            try:
-              metadata.directors.add(director)
-            except:
-              pass
-
-      # Writers
-      metadata.writers.clear()
-
-      if Prefs['use_writers'] and movie['writers']:
-        for writer in movie['writers']:
-          try:
-            meta_writer = metadata.writers.new()
-            meta_writer.name = writer
-          except:
-            try:
-              metadata.writers.add(writer)
-            except:
-              pass
-
-      # Actors
-      metadata.roles.clear()
-
-      if Prefs['use_actors'] and movie['actors']:
-        for actor in movie['actors']:
-          role = metadata.roles.new()
-          try:
-            role.name = actor
-          except:
-            try:
-              role.actor = actor
-            except:
-              pass
-
-      # Runtime
-      if Prefs['use_runtime'] and movie['runtime']:
-         metadata.duration = movie['runtime'] * 1000
-      else:
-        metadata.duration = None
-
-      # Poster
-      valid_names = list()
-
-      if Prefs['use_poster'] and movie['poster']:
-
-        fullsize = '%s.jpg' % (movie['poster'].rsplit('_', 1)[0])
-        thumb = '%s_SX300.jpg' % (movie['poster'].rsplit('_', 1)[0])
-
-        valid_names.append(fullsize)
-
-        if fullsize not in metadata.posters:
-
-          req = urllib2.Request(thumb)
-          ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-          preview = urllib2.urlopen(req, context=ctx).read()
-
-          metadata.posters[fullsize] = Proxy.Preview(preview)
-
-      metadata.posters.validate_keys(valid_names)
-
-      # Rating
-      if Prefs['use_rating']:
-
-        rating_imdb = None
-        rating_rt = None
-
-        if 'imdb' in movie['ratings']:
-          rating_imdb = float(movie['ratings']['imdb'])
-
-        if 'rt' in movie['ratings']:
-          rating_rt = movie['ratings']['rt']
-
-        if Prefs['rating'] == 'IMDb' and rating_imdb:
-          metadata.rating = rating_imdb
-        elif Prefs['rating'] == 'Rotten Tomatoes' and rating_rt:
-          metadata.rating = float(rating_rt/10)
-
-        if metadata.summary:
-          summary = [metadata.summary]
-        else:
-          summary = []
-
-        if Prefs['add_rating_rt'] and rating_rt:
-          summary.append('Rotten Tomatoes: %s%%' % (rating_rt))
-
-        if Prefs['add_rating_imdb'] and rating_imdb:
-          summary.append('IMDb: %s' % (rating_imdb))
-
-        if len(summary) > 0:
-          summary.reverse()
-          metadata.summary = '  ★  '.join(summary)
-
-      else:
-        metadata.rating = None
-
-    else:
-      Log('*** Failed when processing data from url: %s ***' % (url))
-      return None
+    GetMetadata(metadata, url, type='movie')
 
 ####################################################################################################
 class OmdbApi(Agent.TV_Shows):
@@ -231,161 +74,178 @@ class OmdbApi(Agent.TV_Shows):
   def update(self, metadata, media, lang):
 
     url = API_URL % ('tvdb_id', metadata.id)
+    GetMetadata(metadata, url, type='tv')
 
-    try:
-      series = JSON.ObjectFromURL(url, sleep=1.0)
-    except:
-      Log('*** Failed when trying to open url: %s ***' % (url))
-      return None
+####################################################################################################
+def GetMetadata(metadata, url, type):
 
-    if not 'error' in series:
+  try:
+    movie = JSON.ObjectFromURL(url, sleep=1.0)
+  except:
+    Log('*** Failed when trying to open url: %s ***' % (url))
+    return
 
-      # Title
-      if Prefs['use_title'] and series['title']:
-        metadata.title = series['title']
-      else:
-        metadata.title = None
+  if 'error' in movie:
 
-      # Year
-      #if Prefs['use_year'] and series['year']:
-      #  metadata.year = series['year']
-      #else:
-      #  metadata.year = None
+    Log('*** Failed when processing data from url: %s ***' % (url))
+    Log('*** Error: %s ***' % (movie['error']))
+    return
 
-      # Plot
-      if Prefs['use_plot'] and series['plot']:
-        metadata.summary = series['plot']
-      else:
-        metadata.summary = None
+  # Title
+  if Prefs['use_title'] and movie['title']:
+    metadata.title = movie['title']
+  else:
+    metadata.title = None
 
-      # Content rating
-      if Prefs['use_content_rating'] and series['rated']:
-        metadata.content_rating = series['rated']
-      else:
-        metadata.content_rating = None
+  # Plot
+  if Prefs['use_plot'] and movie['plot']:
+    metadata.summary = movie['plot']
+  else:
+    metadata.summary = None
 
-      # Release date
-      if Prefs['use_release_date'] and series['released']:
-        metadata.originally_available_at = Datetime.ParseDate(series['released']).date()
-      else:
-        metadata.originally_available_at = None
+  # Content rating
+  if Prefs['use_content_rating'] and movie['rated']:
+    metadata.content_rating = movie['rated']
+  else:
+    metadata.content_rating = None
 
-      # Genres
-      metadata.genres.clear()
+  # Release date
+  if Prefs['use_release_date'] and movie['released']:
+    metadata.originally_available_at = Datetime.ParseDate(movie['released']).date()
+  else:
+    metadata.originally_available_at = None
 
-      if Prefs['use_genres'] and series['genres']:
-        for genre in series['genres']:
-          metadata.genres.add(genre.strip())
+  # Genres
+  metadata.genres.clear()
 
-      # Production company
-      if Prefs['use_production'] and series['studio']:
-        metadata.studio = series['studio']
-      else:
-        metadata.studio = None
+  if Prefs['use_genres'] and movie['genres']:
+    for genre in movie['genres']:
+      metadata.genres.add(genre.strip())
 
-      # Directors
-      #metadata.directors.clear()
-      #
-      #if Prefs['use_directors'] and series['directors']:
-      #  for director in series['directors']:
-      #    try:
-      #      meta_director = metadata.directors.new()
-      #      meta_director.name = director
-      #    except:
-      #      try:
-      #        metadata.directors.add(director)
-      #      except:
-      #        pass
+  # Production company
+  if Prefs['use_production'] and movie['studio']:
+    metadata.studio = movie['studio']
+  else:
+    metadata.studio = None
 
-      # Writers
-      #metadata.writers.clear()
-      #
-      #if Prefs['use_writers'] and series['writers']:
-      #  for writer in series['writers']:
-      #    try:
-      #      meta_writer = metadata.writers.new()
-      #      meta_writer.name = writer
-      #    except:
-      #      try:
-      #        metadata.writers.add(writer)
-      #      except:
-      #        pass
+  # Actors
+  metadata.roles.clear()
 
-      # Actors
-      metadata.roles.clear()
+  if Prefs['use_actors'] and movie['actors']:
 
-      if Prefs['use_actors'] and series['actors']:
-        for actor in series['actors']:
-          role = metadata.roles.new()
-          try:
-            role.name = actor
-          except:
-            try:
-              role.actor = actor
-            except:
-              pass
+    for actor in movie['actors']:
+      role = metadata.roles.new()
+      try:
+        role.name = actor
+      except:
+        try:
+          role.actor = actor
+        except:
+          pass
 
-      # Runtime
-      if Prefs['use_runtime'] and series['runtime']:
-         metadata.duration = series['runtime'] * 1000
-      else:
-        metadata.duration = None
+  # Runtime
+  if Prefs['use_runtime'] and movie['runtime']:
+     metadata.duration = movie['runtime'] * 1000
+  else:
+    metadata.duration = None
 
-      # Poster
-      valid_names = list()
+  # Poster
+  valid_names = list()
 
-      if Prefs['use_poster'] and series['poster']:
+  if Prefs['use_poster'] and movie['poster']:
 
-        fullsize = '%s.jpg' % (series['poster'].rsplit('_', 1)[0])
-        thumb = '%s_SX300.jpg' % (series['poster'].rsplit('_', 1)[0])
+    fullsize = '%s.jpg' % (movie['poster'].rsplit('_', 1)[0])
+    thumb = '%s_SX300.jpg' % (movie['poster'].rsplit('_', 1)[0])
 
-        valid_names.append(fullsize)
+    valid_names.append(fullsize)
 
-        if fullsize not in metadata.posters:
+    if fullsize not in metadata.posters:
 
-          req = urllib2.Request(thumb)
-          ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-          preview = urllib2.urlopen(req, context=ctx).read()
+      req = urllib2.Request(thumb)
+      ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+      preview = urllib2.urlopen(req, context=ctx).read()
 
-          metadata.posters[fullsize] = Proxy.Preview(preview)
+      metadata.posters[fullsize] = Proxy.Preview(preview)
 
-      metadata.posters.validate_keys(valid_names)
+  metadata.posters.validate_keys(valid_names)
 
-      # Rating
-      if Prefs['use_rating']:
+  # Ratings
+  rating_imdb = None
+  rating_rt = None
+  rating_metacritic = None
 
-        rating_imdb = None
-        rating_rt = None
+  if 'imdb' in movie['ratings']:
+    rating_imdb = float(movie['ratings']['imdb'])
 
-        if 'imdb' in series['ratings']:
-          rating_imdb = float(series['ratings']['imdb'])
+  if 'rt' in movie['ratings']:
+    rating_rt = movie['ratings']['rt']
 
-        if 'rt' in series['ratings']:
-          rating_rt = series['ratings']['rt']
+  if 'metacritic' in movie['ratings']:
+    rating_metacritic = movie['ratings']['metacritic']
 
-        if Prefs['rating'] == 'IMDb' and rating_imdb:
-          metadata.rating = rating_imdb
-        elif Prefs['rating'] == 'Rotten Tomatoes' and rating_rt:
-          metadata.rating = float(rating_rt/10)
+  if ((type == 'movie' and Prefs['rating_movies'] == 'IMDb') or (type == 'tv' and Prefs['rating_tv'] == 'IMDb')) and rating_imdb:
+    metadata.rating = rating_imdb
+  elif ((type == 'movie' and Prefs['rating_movies'] == 'Rotten Tomatoes') or (type == 'tv' and Prefs['rating_tv'] == 'Rotten Tomatoes')) and rating_rt:
+    metadata.rating = float(rating_rt/10)
+  elif type == 'movie' and Prefs['rating_movies'] == 'Metacritic' and rating_metacritic:
+    metadata.rating = float(rating_metacritic/10)
+  else:
+    metadata.rating = None
 
-        if metadata.summary:
-          summary = [metadata.summary]
-        else:
-          summary = []
+  # Add rating(s) to summary
+  if metadata.summary:
+    summary = [metadata.summary]
+  else:
+    summary = []
 
-        if Prefs['add_rating_rt'] and rating_rt:
-          summary.append('Rotten Tomatoes: %s%%' % (rating_rt))
+  if Prefs['add_rating_metacritic'] and rating_metacritic:
+    summary.append('Metacritic: %s' % (rating_metacritic))
 
-        if Prefs['add_rating_imdb'] and rating_imdb:
-          summary.append('IMDb: %s' % (rating_imdb))
+  if Prefs['add_rating_rt'] and rating_rt:
+    summary.append('Rotten Tomatoes: %s%%' % (rating_rt))
 
-        if len(summary) > 0:
-          summary.reverse()
-          metadata.summary = '  ★  '.join(summary)
+  if Prefs['add_rating_imdb'] and rating_imdb:
+    summary.append('IMDb: %s' % (rating_imdb))
 
-      else:
-        metadata.rating = None
+  if len(summary) > 0:
+    summary.reverse()
+    metadata.summary = '  ★  '.join(summary)
 
+  # Some metadata that is specific to movies
+  if type == 'movie':
+
+    # Year
+    if Prefs['use_year'] and movie['year']:
+      metadata.year = movie['year']
     else:
-      Log('*** Failed when processing data from url: %s ***' % (url))
-      return None
+      metadata.year = None
+
+    # Directors
+    metadata.directors.clear()
+
+    if Prefs['use_directors'] and movie['directors']:
+
+      for director in movie['directors']:
+        try:
+          meta_director = metadata.directors.new()
+          meta_director.name = director
+        except:
+          try:
+            metadata.directors.add(director)
+          except:
+            pass
+
+    # Writers
+    metadata.writers.clear()
+
+    if Prefs['use_writers'] and movie['writers']:
+
+      for writer in movie['writers']:
+        try:
+          meta_writer = metadata.writers.new()
+          meta_writer.name = writer
+        except:
+          try:
+            metadata.writers.add(writer)
+          except:
+            pass
