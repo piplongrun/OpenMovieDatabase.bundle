@@ -45,7 +45,7 @@ What metadata can I expect from this agent?
 | Writers                      | ✓      |          | Yes             | |
 | Actors                       | ✓      | ✓        | Yes             | Names only, no images.|
 | Runtime                      | ✓      | ✓        | Yes             | |
-| Poster                       | ✓      | ✓        | No              | Just 1 poster image is available. Quality can vary, it is not recommended to use this. Use the Fanart.TV instead.|
+| Poster                       | ✓      | ✓        | No              | Just 1 poster image is available. Quality can vary, it is not recommended to use this. Use the Fanart.TV agent instead.|
 | IMDb rating                  | ✓      | ✓        | Yes             | |
 | ↳ Add to summary             | ✓      | ✓        | No              | |
 | Rotten Tomatoes rating       | ✓      | ✓        | No              | |
