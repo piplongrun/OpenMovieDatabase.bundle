@@ -28,3 +28,27 @@ Create an [issue on Github](https://github.com/piplongrun/OpenMovieDatabase.bund
  - Plex Media Server version
  - Primary agent and order of any secondary agents
  - Log files, `com.plexapp.agents.omdbapi.log`
+
+What metadata can I expect from this agent?
+-------------------------------------------
+
+|                              | Movies | TV shows | Used by default | |
+|------------------------------|:------:|:--------:|-----------------|-|
+| Title                        | ✓      | ✓        | Yes             | |
+| Year                         | ✓      |          | Yes             | |
+| Plot                         | ✓      | ✓        | Yes             | |
+| Content Rating               | ✓      | ✓        | Yes             | |
+| Release Data                 | ✓      | ✓        | Yes             | |
+| Genres                       | ✓      | ✓        | Yes             | |
+| Production Company           | ✓      | ✓        | Yes             | |
+| Directors                    | ✓      |          | Yes             | |
+| Writers                      | ✓      |          | Yes             | |
+| Actors                       | ✓      | ✓        | Yes             | |
+| Runtime                      | ✓      | ✓        | Yes             | |
+| Poster                       | ✓      | ✓        | No              | Just 1 poster image is available. Quality can vary, it is not recommended to use this. Use the Fanart.TV instead.|
+| IMDb rating                  | ✓      | ✓        | Yes             | |
+| ↳ Add to summary             | ✓      | ✓        | No              | |
+| Rotten Tomatoes rating       | ✓      | ✓        | No              | |
+| ↳ Add to summary             | ✓      | ✓        | No              | |
+| Metacritic rating            | ✓      |          | No              | |
+| ↳ Add to summary             | ✓      |          | No              | |
