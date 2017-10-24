@@ -186,9 +186,9 @@ def GetMetadata(metadata, url, type):
   if ((type == 'movie' and Prefs['rating_movies'] == 'IMDb') or (type == 'tv' and Prefs['rating_tv'] == 'IMDb')) and rating_imdb:
     metadata.rating = rating_imdb
   elif ((type == 'movie' and Prefs['rating_movies'] == 'Rotten Tomatoes') or (type == 'tv' and Prefs['rating_tv'] == 'Rotten Tomatoes')) and rating_rt:
-    metadata.rating = float(rating_rt/10)
+    metadata.rating = float(rating_rt)/10
   elif type == 'movie' and Prefs['rating_movies'] == 'Metacritic' and rating_metacritic:
-    metadata.rating = float(rating_metacritic/10)
+    metadata.rating = float(rating_metacritic)/10
   else:
     metadata.rating = None
 
