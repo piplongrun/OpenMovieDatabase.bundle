@@ -32,23 +32,24 @@ Create an [issue on Github](https://github.com/piplongrun/OpenMovieDatabase.bund
 What metadata can I expect from this agent?
 -------------------------------------------
 
-|                              | Movies | TV shows | Used by default | |
+|                              | Movies | TV shows | Episodes | Used by default | |
 |------------------------------|:------:|:--------:|-----------------|-|
-| Title                        | ✓      | ✓        | Yes             | |
-| Year                         | ✓      |          | Yes             | |
-| Plot                         | ✓      | ✓        | Yes             | |
-| Content Rating               | ✓      | ✓        | Yes             | |
-| Release Data                 | ✓      | ✓        | Yes             | |
-| Genres                       | ✓      | ✓        | Yes             | |
-| Production Company           | ✓      | ✓        | Yes             | |
-| Directors                    | ✓      |          | Yes             | |
-| Writers                      | ✓      |          | Yes             | |
-| Actors                       | ✓      | ✓        | Yes             | Names only, no images.|
-| Runtime                      | ✓      | ✓        | Yes             | |
-| Poster                       | ✓      | ✓        | No              | Just 1 poster image is available. Quality can vary, it is not recommended to use this. Use the Fanart.TV agent instead.|
-| IMDb rating                  | ✓      | ✓        | Yes             | |
-| ↳ Add to summary             | ✓      | ✓        | No              | |
-| Rotten Tomatoes rating       | ✓      | ✓        | No              | |
-| ↳ Add to summary             | ✓      | ✓        | No              | |
-| Metacritic rating            | ✓      |          | No              | |
-| ↳ Add to summary             | ✓      |          | No              | |
+| Title                        | ✓      | ✓        | ✓        | Yes             | |
+| Year                         | ✓      |          |          | Yes             | |
+| Plot                         | ✓      | ✓        | ✓        | Yes             | |
+| Content Rating               | ✓      | ✓        |          | Yes             | |
+| Release Data                 | ✓      | ✓        | ✓        | Yes             | |
+| Genres                       | ✓      | ✓        |          | Yes             | |
+| Production Company           | ✓      | ✓        |          | Yes             | |
+| Directors                    | ✓      |          | ✓        | Yes             | |
+| Writers                      | ✓      |          | ✓        | Yes             | |
+| Actors                       | ✓      | ✓        |          | Yes             | Names only, no images.|
+| Runtime                      | ✓      | ✓        | ✓        | Yes             | |
+| Poster                       | ✓      | ✓        |          | No              | Just 1 poster image is available. Quality can vary, it is not recommended to use this. Use the Fanart.TV agent instead.|
+| Episode Thumb                |        |          | ✓        | No              | Just 1 thumbnail is available. Quality can vary, it is not recommended to use this. Use the TVDB agent instead.|
+| IMDb rating                  | ✓      | ✓        | ✓        | Yes             | |
+| ↳ Add to summary             | ✓      | ✓        | ✓        | No              | |
+| Rotten Tomatoes rating       | ✓      | ✓        |          | No              | |
+| ↳ Add to summary             | ✓      | ✓        |          | No              | |
+| Metacritic rating            | ✓      |          |          | No              | |
+| ↳ Add to summary             | ✓      |          |          | No              | |
