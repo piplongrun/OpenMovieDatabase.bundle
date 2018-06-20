@@ -38,7 +38,7 @@ What metadata can I expect from this agent?
 | Year                         | ✓      |          |          | Yes             | |
 | Plot                         | ✓      | ✓        | ✓        | Yes             | |
 | Content Rating               | ✓      | ✓        |          | Yes             | |
-| Release Data                 | ✓      | ✓        | ✓        | Yes             | |
+| Release Date                 | ✓      | ✓        | ✓        | Yes             | |
 | Genres                       | ✓      | ✓        |          | Yes             | |
 | Production Company           | ✓      | ✓        |          | Yes             | |
 | Directors                    | ✓      |          | ✓        | Yes             | |
