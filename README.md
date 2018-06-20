@@ -47,7 +47,7 @@ What metadata can I expect from this agent?
 | Runtime                      | ✓      | ✓        | ✓        | Yes             | |
 | Poster                       | ✓      | ✓        |          | No              | Just 1 poster image is available. Quality can vary, it is not recommended to use this. Use the Fanart.TV agent instead.|
 | Episode Thumb                |        |          | ✓        | No              | Just 1 thumbnail is available. Quality can vary, it is not recommended to use this. Use the TVDB agent instead.|
-| IMDb rating                  | ✓      | ✓        | ✓        | Yes             | |
+| IMDb rating                  | ✓      | ✓        | ✓        | Yes             | For movies: value between 0 and 10. For TV Shows and Episodes: Converted to star value between 0 and 100.|
 | ↳ Add to summary             | ✓      | ✓        | ✓        | No              | |
 | Rotten Tomatoes rating       | ✓      | ✓        |          | No              | |
 | ↳ Add to summary             | ✓      | ✓        |          | No              | |
