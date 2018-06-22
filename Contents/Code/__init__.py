@@ -1,6 +1,6 @@
 import ssl, urllib2
 
-API_URL = 'https://api.tadata.me/omdb/v1/?%s=%s'
+API_URL = 'https://api.tadata.me/omdb/v1/?{}={}'
 
 def Start():
 
@@ -41,7 +41,7 @@ class OmdbApi(Agent.Movies):
       )
 
       if not imdb_id:
-        Log("*** Could not find IMDb id for movie with The Movie Database id: %s ***" % (media.primary_metadata.id))
+        Log("*** Could not find IMDb id for movie with The Movie Database id: {} ***".format(media.primary_metadata.id))
         return None
 
     results.Append(MetadataSearchResult(
@@ -51,8 +51,7 @@ class OmdbApi(Agent.Movies):
 
   def update(self, metadata, media, lang):
 
-    url = API_URL % ('imdb_id', metadata.id)
-    GetMetadata(metadata, url, type='movie')
+    GetMetadata(metadata, API_URL.format('imdb_id', metadata.id), type='movie')
 
 ####################################################################################################
 class OmdbApi(Agent.TV_Shows):
@@ -73,133 +72,92 @@ class OmdbApi(Agent.TV_Shows):
 
   def update(self, metadata, media, lang):
 
-    url = API_URL % ('tvdb_id', metadata.id)
-    GetMetadata(metadata, url, type='tv')
+    GetMetadata(metadata, API_URL.format('tvdb_id', metadata.id), type='tv')
+
+    for season in media.seasons:
+      for episode in media.seasons[season].episodes:
+        GetMetadata(metadata.seasons[season].episodes[episode], API_URL.format('tvdb_id', '{}&season={}&episode={}'.format(metadata.id, season, episode)), type='episode')
 
 ####################################################################################################
 def GetMetadata(metadata, url, type):
 
   try:
-    movie = JSON.ObjectFromURL(url, sleep=1.0)
+    omdb = JSON.ObjectFromURL(url, sleep=2.0)
   except:
-    Log('*** Failed when trying to open url: %s ***' % (url))
+    Log('*** Failed when trying to open url: {} ***'.format(url))
     return
 
-  if 'error' in movie:
+  if 'error' in omdb:
 
-    Log('*** Failed when processing data from url: %s ***' % (url))
-    Log('*** Error: %s ***' % (movie['error']))
+    Log('*** Failed when processing data from url: {} ***'.format(url))
+    Log('*** Error: {} ***'.format(omdb['error']))
     return
 
   # Title
-  if Prefs['use_title'] and movie['title']:
-    metadata.title = movie['title']
+  if Prefs['use_title'] and omdb['title']:
+    metadata.title = omdb['title']
   else:
     metadata.title = None
 
   # Plot
-  if Prefs['use_plot'] and movie['plot']:
-    metadata.summary = movie['plot']
+  if Prefs['use_plot'] and omdb['plot']:
+    metadata.summary = omdb['plot']
   else:
     metadata.summary = None
 
-  # Content rating
-  if Prefs['use_content_rating'] and movie['rated']:
-    metadata.content_rating = movie['rated']
-  else:
-    metadata.content_rating = None
-
   # Release date
-  if Prefs['use_release_date'] and movie['released']:
-    metadata.originally_available_at = Datetime.ParseDate(movie['released']).date()
+  if Prefs['use_release_date'] and omdb['released']:
+    metadata.originally_available_at = Datetime.ParseDate(omdb['released']).date()
   else:
     metadata.originally_available_at = None
 
-  # Genres
-  metadata.genres.clear()
-
-  if Prefs['use_genres'] and movie['genres']:
-    for genre in movie['genres']:
-      metadata.genres.add(genre.strip())
-
-  # Production company
-  if Prefs['use_production'] and movie['studio']:
-    metadata.studio = movie['studio']
-  else:
-    metadata.studio = None
-
-  # Actors
-  metadata.roles.clear()
-
-  if Prefs['use_actors'] and movie['actors']:
-
-    for actor in movie['actors']:
-      role = metadata.roles.new()
-      try:
-        role.name = actor
-      except:
-        try:
-          role.actor = actor
-        except:
-          pass
-
   # Runtime
-  if Prefs['use_runtime'] and movie['runtime']:
-     metadata.duration = movie['runtime'] * 1000
+  if Prefs['use_runtime'] and omdb['runtime']:
+     metadata.duration = omdb['runtime'] * 1000
   else:
     metadata.duration = None
-
-  # Poster
-  valid_names = list()
-
-  if Prefs['use_poster'] and movie['poster']:
-
-    fullsize = '%s.jpg' % (movie['poster'].rsplit('_', 1)[0])
-    thumb = '%s_SX300.jpg' % (movie['poster'].rsplit('_', 1)[0])
-
-    valid_names.append(fullsize)
-
-    if fullsize not in metadata.posters:
-
-      req = urllib2.Request(thumb)
-      ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-      preview = urllib2.urlopen(req, context=ctx).read()
-
-      metadata.posters[fullsize] = Proxy.Preview(preview)
-
-  metadata.posters.validate_keys(valid_names)
 
   # Ratings
   rating_imdb = None
   rating_rt = None
   rating_metacritic = None
 
-  if 'imdb' in movie['ratings']:
-    rating_imdb = float(movie['ratings']['imdb'])
+  if 'imdb' in omdb['ratings']:
+    rating_imdb = float(omdb['ratings']['imdb'])
 
-  if 'rt' in movie['ratings']:
-    rating_rt = movie['ratings']['rt']
+  if 'rt' in omdb['ratings']:
+    rating_rt = omdb['ratings']['rt']
 
-  if 'metacritic' in movie['ratings']:
-    rating_metacritic = movie['ratings']['metacritic']
+  if 'metacritic' in omdb['ratings']:
+    rating_metacritic = omdb['ratings']['metacritic']
 
-  if ((type == 'movie' and Prefs['rating_movies'] == 'IMDb') or (type == 'tv' and Prefs['rating_tv'] == 'IMDb')) and rating_imdb:
+  if ((type == 'movie' and Prefs['rating_movies'] == 'IMDb') or (type in ['tv', 'episode'] and Prefs['rating_tv'] == 'IMDb')) and rating_imdb:
     metadata.rating = rating_imdb
-    metadata.rating_image = 'imdb://image.rating'
+
+    try: metadata.rating_image = 'imdb://image.rating'
+    except: pass
+
   elif ((type == 'movie' and Prefs['rating_movies'] == 'Rotten Tomatoes') or (type == 'tv' and Prefs['rating_tv'] == 'Rotten Tomatoes')) and rating_rt:
     metadata.rating = float(rating_rt)/10
 
-    if rating_rt >= 60:
-      metadata.rating_image = 'rottentomatoes://image.rating.ripe'
-    else:
-      metadata.rating_image = 'rottentomatoes://image.rating.rotten'
+    try:
+      if rating_rt >= 60:
+        metadata.rating_image = 'rottentomatoes://image.rating.ripe'
+      else:
+        metadata.rating_image = 'rottentomatoes://image.rating.rotten'
+    except:
+      pass
 
   elif type == 'movie' and Prefs['rating_movies'] == 'Metacritic' and rating_metacritic:
     metadata.rating = float(rating_metacritic)/10
-    metadata.rating_image = None
+
+    try: metadata.rating_image = None
+    except: pass
   else:
     metadata.rating = None
-    metadata.rating_image = None
+
+    try: metadata.rating_image = None
+    except: pass
 
   # Add rating(s) to summary
   if metadata.summary:
@@ -208,33 +166,84 @@ def GetMetadata(metadata, url, type):
     summary = []
 
   if Prefs['add_rating_metacritic'] and rating_metacritic:
-    summary.append('Metacritic: %s' % (rating_metacritic))
+    summary.append('Metacritic: {}'.format(rating_metacritic))
 
   if Prefs['add_rating_rt'] and rating_rt:
-    summary.append('Rotten Tomatoes: %s%%' % (rating_rt))
+    summary.append('Rotten Tomatoes: {}%'.format(rating_rt))
 
   if Prefs['add_rating_imdb'] and rating_imdb:
-    summary.append('IMDb: %s' % (rating_imdb))
+    summary.append('IMDb: {}'.format(rating_imdb))
 
   if len(summary) > 0:
     summary.reverse()
     metadata.summary = '  ★  '.join(summary)
 
-  # Some metadata that is specific to movies
-  if type == 'movie':
+  # Add movie or TV specific metadata
+  if type in ['movie', 'tv']:
 
-    # Year
-    if Prefs['use_year'] and movie['year']:
-      metadata.year = movie['year']
+    # Content rating
+    if Prefs['use_content_rating'] and omdb['rated']:
+      metadata.content_rating = omdb['rated']
     else:
-      metadata.year = None
+      metadata.content_rating = None
+
+    # Genres
+    metadata.genres.clear()
+
+    if Prefs['use_genres'] and omdb['genres']:
+      for genre in omdb['genres']:
+        metadata.genres.add(genre.strip())
+
+    # Production company
+    if Prefs['use_production'] and omdb['studio']:
+      metadata.studio = omdb['studio']
+    else:
+      metadata.studio = None
+
+    # Actors
+    metadata.roles.clear()
+
+    if Prefs['use_actors'] and omdb['actors']:
+
+      for actor in omdb['actors']:
+        role = metadata.roles.new()
+        try:
+          role.name = actor
+        except:
+          try:
+            role.actor = actor
+          except:
+            pass
+
+    # Poster
+    valid_names = list()
+
+    if Prefs['use_poster'] and omdb['poster']:
+
+      fullsize = '{}.jpg'.format(omdb['poster'].rsplit('_', 1)[0])
+      thumb = '{}_SX300.jpg'.format(omdb['poster'].rsplit('_', 1)[0])
+
+      valid_names.append(fullsize)
+
+      if fullsize not in metadata.posters:
+
+        req = urllib2.Request(thumb)
+        ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+        preview = urllib2.urlopen(req, context=ctx).read()
+
+        metadata.posters[fullsize] = Proxy.Preview(preview)
+
+    metadata.posters.validate_keys(valid_names)
+
+  # Add movie or episode specific metadata
+  if type in ['movie', 'episode']:
 
     # Directors
     metadata.directors.clear()
 
-    if Prefs['use_directors'] and movie['directors']:
+    if Prefs['use_directors'] and omdb['directors']:
 
-      for director in movie['directors']:
+      for director in omdb['directors']:
         try:
           meta_director = metadata.directors.new()
           meta_director.name = director
@@ -247,9 +256,9 @@ def GetMetadata(metadata, url, type):
     # Writers
     metadata.writers.clear()
 
-    if Prefs['use_writers'] and movie['writers']:
+    if Prefs['use_writers'] and omdb['writers']:
 
-      for writer in movie['writers']:
+      for writer in omdb['writers']:
         try:
           meta_writer = metadata.writers.new()
           meta_writer.name = writer
@@ -258,3 +267,35 @@ def GetMetadata(metadata, url, type):
             metadata.writers.add(writer)
           except:
             pass
+
+  # Add movie specific metadata
+  if type == 'movie':
+
+    # Year
+    if Prefs['use_year'] and omdb['year']:
+      metadata.year = omdb['year']
+    else:
+      metadata.year = None
+
+  # Add episode specific metadata
+  if type == 'episode':
+
+    # Thumb
+    valid_names = list()
+
+    if Prefs['use_thumb'] and omdb['poster']:
+
+      fullsize = '{}.jpg'.format(omdb['poster'].rsplit('_', 1)[0])
+      thumb = '{}_SX300.jpg'.format(omdb['poster'].rsplit('_', 1)[0])
+
+      valid_names.append(fullsize)
+
+      if fullsize not in metadata.thumbs:
+
+        req = urllib2.Request(thumb)
+        ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+        preview = urllib2.urlopen(req, context=ctx).read()
+
+        metadata.thumbs[fullsize] = Proxy.Preview(preview)
+
+    metadata.thumbs.validate_keys(valid_names)
