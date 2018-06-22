@@ -15,7 +15,7 @@ You can install Open Movie Database:
 
 After installation:
 
- - Activate the agent in *Settings* > *Agents* and drag it all the way to the top of the list.
+ - Activate the agent in *Settings* > *Agents* and drag it all the way to the top of the list. See also [Recommended agent settings](#recommended-agent-settings).
  - Create a new library or use the *Refresh All Metadata* option on an existing library to let the agent collect and add metadata.
 
 Where do I download Open Movie Database?
@@ -53,3 +53,14 @@ What metadata can I expect from this agent?
 | ↳ Add to summary             | ✓      | ✓        |          | No              | |
 | Metacritic rating            | ✓      |          |          | No              | |
 | ↳ Add to summary             | ✓      |          |          | No              | |
+
+Recommended agent settings
+--------------------------
+### For use with the Plex Movie agent:
+![omdb](https://tadata.me/images/omdb/agent-settings-plex-movie.jpg "Recommended Plex Movie agent settings")
+
+### For use with The Movie Database agent (Movies):
+![omdb](https://tadata.me/images/omdb/agent-settings-the-movie-database.jpg "Recommended The Movie Database agent settings")
+
+### For use with TheTVDB agent (Shows):
+![omdb](https://tadata.me/images/omdb/agent-settings-thetvdb.jpg "Recommended TheTVDB agent settings")
