@@ -67,7 +67,13 @@
   },
   {
     "id": "use_poster",
-    "label": "Use Poster",
+    "label": "Use Movie/TV Poster",
+    "type": "bool",
+    "default": "false"
+  },
+  {
+    "id": "use_thumb",
+    "label": "Use Episode Thumb",
     "type": "bool",
     "default": "false"
   },
