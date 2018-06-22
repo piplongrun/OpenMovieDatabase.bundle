@@ -4,7 +4,7 @@ API_URL = 'https://api.tadata.me/omdb/v1/?{}={}'
 
 def Start():
 
-  HTTP.CacheTime = CACHE_1WEEK
+  HTTP.CacheTime = CACHE_1HOUR
   HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12.4) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.1 Safari/603.1.30'
   HTTP.Headers['Referer'] = 'http://www.imdb.com/'
 
