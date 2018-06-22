@@ -15,8 +15,8 @@ You can install Open Movie Database:
 
 After installation:
 
-1. Activate the agent in *Settings* > *Server* > *Agents* and drag it all the way to the top of the list.
-2. Use the *Refresh All Metadata* option on your library to let the agent collect and add metadata.
+ - Activate the agent in *Settings* > *Agents* and drag it all the way to the top of the list.
+ - Create a new library or use the *Refresh All Metadata* option on an existing library to let the agent collect and add metadata.
 
 Where do I download Open Movie Database?
 ----------------------------------------
