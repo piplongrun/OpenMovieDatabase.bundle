@@ -51,7 +51,7 @@ class OmdbApi(Agent.Movies):
 
   def update(self, metadata, media, lang):
 
-    GetMetadata(metadata, API_URL.format('imdb_id', metadata.id), type='movie')
+    GetMetadata(metadata, media, API_URL.format('imdb_id', metadata.id), type='movie')
 
 ####################################################################################################
 class OmdbApi(Agent.TV_Shows):
@@ -72,18 +72,21 @@ class OmdbApi(Agent.TV_Shows):
 
   def update(self, metadata, media, lang):
 
-    GetMetadata(metadata, API_URL.format('tvdb_id', metadata.id), type='tv')
+    GetMetadata(metadata, media, API_URL.format('tvdb_id', metadata.id), type='tv')
 
     for season in media.seasons:
       for episode in media.seasons[season].episodes:
-        GetMetadata(metadata.seasons[season].episodes[episode], API_URL.format('tvdb_id', '{}&season={}&episode={}'.format(metadata.id, season, episode)), type='episode')
+        GetMetadata(metadata.seasons[season].episodes[episode], None, API_URL.format('tvdb_id', '{}&season={}&episode={}'.format(metadata.id, season, episode)), type='episode')
 
 ####################################################################################################
-def GetMetadata(metadata, url, type):
+def GetMetadata(metadata, media, url, type):
 
   try:
     omdb = JSON.ObjectFromURL(url, sleep=2.0)
   except:
+    if type in ['movie', 'tv']:
+      HTTP.Request('https://api.tadata.me/omdb/v1/feedback', data='{{"id": "{}", "title": "{}"}}'.format(metadata.id, media.title), method='PUT', immediate=True)
+
     Log('*** Failed when trying to open url: {} ***'.format(url))
     return
 
