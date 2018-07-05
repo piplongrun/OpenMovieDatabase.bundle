@@ -125,13 +125,13 @@ def GetMetadata(metadata, media, url, type):
   rating_rt = None
   rating_metacritic = None
 
-  if 'imdb' in omdb['ratings']:
+  if omdb['ratings'] and 'imdb' in omdb['ratings']:
     rating_imdb = float(omdb['ratings']['imdb'])
 
-  if 'rt' in omdb['ratings']:
+  if omdb['ratings'] and 'rt' in omdb['ratings']:
     rating_rt = omdb['ratings']['rt']
 
-  if 'metacritic' in omdb['ratings']:
+  if omdb['ratings'] and 'metacritic' in omdb['ratings']:
     rating_metacritic = omdb['ratings']['metacritic']
 
   if ((type == 'movie' and Prefs['rating_movies'] == 'IMDb') or (type in ['tv', 'episode'] and Prefs['rating_tv'] == 'IMDb')) and rating_imdb:
