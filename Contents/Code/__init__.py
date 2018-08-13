@@ -1,15 +1,16 @@
-import ssl, urllib2
+import certifi
+import requests
 
 API_URL = 'https://api.tadata.me/omdb/v1/?{}={}'
+HTTP_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12.4) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.1 Safari/603.1.30",
+  "Referer": "http://www.imdb.com/"
+}
 
 def Start():
-
-  HTTP.CacheTime = CACHE_1HOUR
-  HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12.4) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.1 Safari/603.1.30'
-  HTTP.Headers['Referer'] = 'http://www.imdb.com/'
+  pass
 
 def ValidatePrefs():
-
   pass
 
 ####################################################################################################
@@ -81,20 +82,22 @@ class OmdbApi(Agent.TV_Shows):
 ####################################################################################################
 def GetMetadata(metadata, media, url, type):
 
+  r = requests.get(url, headers=HTTP_HEADERS, verify=certifi.where())
+
   try:
-    omdb = JSON.ObjectFromURL(url, sleep=2.0)
-  except:
+    omdb = r.json()
+  except ValueError:
+    Log("*** Did not receive valid JSON data from URL: {} (HTTP status code: {}) ***".format(url, r.status_code))
+    return None
+
+  if r.status_code != 200:
     if type in ['movie', 'tv']:
-      HTTP.Request('https://api.tadata.me/omdb/v1/feedback', data='{{"id": "{}", "title": "{}"}}'.format(metadata.id, media.title), method='PUT', immediate=True)
+      requests.put('https://api.tadata.me/omdb/v1/feedback', data='{{"id": "{}", "title": "{}", "http_code": "{}", "error": "{}"}}'.format(metadata.id, media.title, r.status_code, omdb['error']), verify=certifi.where())
 
-    Log('*** Failed when trying to open url: {} ***'.format(url))
-    return
+    Log("*** Did not receive data from URL: {} (HTTP status code: {}) ***".format(url, r.status_code))
+    Log("*** Reason: {} ***".format(omdb['error']))
 
-  if 'error' in omdb:
-
-    Log('*** Failed when processing data from url: {} ***'.format(url))
-    Log('*** Error: {} ***'.format(omdb['error']))
-    return
+    return None
 
   # Title
   if Prefs['use_title'] and omdb['title']:
@@ -223,18 +226,17 @@ def GetMetadata(metadata, media, url, type):
 
     if Prefs['use_poster'] and omdb['poster']:
 
-      fullsize = '{}.jpg'.format(omdb['poster'].rsplit('_', 1)[0])
-      thumb = '{}_SX300.jpg'.format(omdb['poster'].rsplit('_', 1)[0])
+      fullsize_url = '{}.jpg'.format(omdb['poster'].rsplit('_', 1)[0])
+      thumb_url = '{}_SX300.jpg'.format(omdb['poster'].rsplit('_', 1)[0])
 
-      valid_names.append(fullsize)
+      if fullsize_url not in metadata.posters:
 
-      if fullsize not in metadata.posters:
+        r = requests.get(thumb_url, headers=HTTP_HEADERS, verify=certifi.where())
 
-        req = urllib2.Request(thumb)
-        ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-        preview = urllib2.urlopen(req, context=ctx).read()
+        if r.status_code == 200:
 
-        metadata.posters[fullsize] = Proxy.Preview(preview)
+          valid_names.append(fullsize_url)
+          metadata.posters[fullsize_url] = Proxy.Preview(r.content)
 
     metadata.posters.validate_keys(valid_names)
 
@@ -288,17 +290,16 @@ def GetMetadata(metadata, media, url, type):
 
     if Prefs['use_thumb'] and omdb['poster']:
 
-      fullsize = '{}.jpg'.format(omdb['poster'].rsplit('_', 1)[0])
-      thumb = '{}_SX300.jpg'.format(omdb['poster'].rsplit('_', 1)[0])
+      fullsize_url = '{}.jpg'.format(omdb['poster'].rsplit('_', 1)[0])
+      thumb_url = '{}_SX300.jpg'.format(omdb['poster'].rsplit('_', 1)[0])
 
-      valid_names.append(fullsize)
+      if fullsize_url not in metadata.thumbs:
 
-      if fullsize not in metadata.thumbs:
+        r = requests.get(thumb_url, headers=HTTP_HEADERS, verify=certifi.where())
 
-        req = urllib2.Request(thumb)
-        ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-        preview = urllib2.urlopen(req, context=ctx).read()
+        if r.status_code == 200:
 
-        metadata.thumbs[fullsize] = Proxy.Preview(preview)
+          valid_names.append(fullsize_url)
+          metadata.thumbs[fullsize_url] = Proxy.Preview(r.content)
 
     metadata.thumbs.validate_keys(valid_names)
