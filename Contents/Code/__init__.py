@@ -1,6 +1,8 @@
 import certifi
 import requests
+from time import sleep
 
+VERSION = '1.8'
 API_URL = 'https://api.tadata.me/omdb/v1/?{}={}'
 HTTP_HEADERS = {
   "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12.4) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.1 Safari/603.1.30",
@@ -82,6 +84,7 @@ class OmdbApi(Agent.TV_Shows):
 ####################################################################################################
 def GetMetadata(metadata, media, url, type):
 
+  sleep(1.5) # Prevent 429
   r = requests.get(url, headers=HTTP_HEADERS, verify=certifi.where())
 
   try:
