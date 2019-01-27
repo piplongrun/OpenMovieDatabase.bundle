@@ -1,3 +1,5 @@
+**This agent is no longer maintained and its backend APIs have been taken offline**
+
 Open Movie Database
 ===================
 <img src="https://img.shields.io/github/release/piplongrun/OpenMovieDatabase.bundle.png?style=flat-square">
